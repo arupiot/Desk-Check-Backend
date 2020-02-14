@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore;
 using DeskCheck.Models;
 using System;
 
-
 namespace DeskCheck.Controllers
 {
     [ApiController]
@@ -20,7 +19,7 @@ namespace DeskCheck.Controllers
             _context = context;
         }
 
-        // GET: api/Desks
+        // GET: desk/getAll
         [HttpGet]
         public IEnumerable<Desk> GetDesks()
         {
@@ -39,7 +38,7 @@ namespace DeskCheck.Controllers
 
         }
 
-        // GET: api/Desks/5
+        // GET: desk/getAll
         [HttpGet("{id}")]
         public async Task<ActionResult<Desk>> GetDesk(int id)
         {
