@@ -95,7 +95,7 @@ namespace DeskCheck.Controllers
         }
 
         // POST: api/Desks
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
+        // To protect from oerposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
         public async Task<ActionResult<Desk>> PostDesk(Desk desk)
