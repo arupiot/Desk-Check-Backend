@@ -21,7 +21,7 @@ namespace DeskCheck
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<DeskCheckContext>(opt =>
-                opt.UseInMemoryDatabase("TodoList"));
+                opt.UseInMemoryDatabase("DeskList"));
             services.AddControllers();
         }
 

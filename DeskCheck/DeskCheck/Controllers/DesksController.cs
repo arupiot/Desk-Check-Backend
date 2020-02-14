@@ -4,11 +4,13 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using DeskCheck.Models;
+using System;
+
 
 namespace DeskCheck.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("desk/getAll")]
     public class DesksController : ControllerBase
     {
         private readonly DeskCheckContext _context;
@@ -20,9 +22,21 @@ namespace DeskCheck.Controllers
 
         // GET: api/Desks
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Desk>>> GetDesks()
+        public IEnumerable<Desk> GetDesks()
         {
-            return await _context.Desks.ToListAsync();
+            var rng = new Random();
+            return Enumerable.Range(1, 5).Select(index => new Desk
+            {
+                deskID = index,
+                temperature = rng.Next(10, 30),
+                CO2 = rng.Next(200, 500), //ppm
+                floor = rng.Next(0, 5),
+                X = rng.Next(50, 90),
+                Y = rng.Next(50, 90),
+                registered = rng.Next(0, 2) == 1
+            })
+            .ToArray();
+
         }
 
         // GET: api/Desks/5
@@ -42,6 +56,7 @@ namespace DeskCheck.Controllers
         // PUT: api/Desks/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
+        /*********************************
         [HttpPut("{id}")]
         public async Task<IActionResult> PutDesk(int id, Desk desk)
         {
@@ -102,6 +117,6 @@ namespace DeskCheck.Controllers
         private bool DeskExists(int id)
         {
             return _context.Desks.Any(e => e.deskID == id);
-        }
+        }***********************************/
     }
 }
