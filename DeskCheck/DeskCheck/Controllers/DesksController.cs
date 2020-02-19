@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using DeskCheck.Models;
 using System;
-using System.Web.Http.Cors;
 
 namespace DeskCheck.Controllers
 {
