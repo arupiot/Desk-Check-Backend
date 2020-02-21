@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using DeskCheck.Models;
 using System;
+using System.Web;
 
 namespace DeskCheck.Controllers
 {
@@ -41,9 +42,8 @@ namespace DeskCheck.Controllers
 
         // GET: desk/getDesk
         [HttpGet("getDesk/{id}")]
-        public Desk GetDesk(int id)
+        public ActionResult<Desk> GetDesk(int id)
         {
-
             foreach(var desk in desks){
                 if(desk.deskID == id)
                 {
@@ -51,14 +51,7 @@ namespace DeskCheck.Controllers
                 }
             }
 
-            return null;
-
-            /*if (desk == null)
-            {
-                return NotFound();
-            }
-
-            return desk;*/
+            return NotFound();
         }
 
         // PUT: api/Desks/5
@@ -95,7 +88,7 @@ namespace DeskCheck.Controllers
         }
 
         // POST: api/Desks
-        // To protect from oerposting attacks, please enable the specific properties you want to bind to, for
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
         public async Task<ActionResult<Desk>> PostDesk(Desk desk)
