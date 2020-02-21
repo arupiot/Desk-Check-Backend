@@ -9,15 +9,15 @@ namespace DeskCheck.Models
     {
         public int deskID { get; set; }
 
-        public int temperature { get; set; }
+        public float temperature { get; set; }
 
         public int CO2 { get; set; }
 
         public int floor { get; set; }
 
-        public int X { get; set; }
+        public float X { get; set; }
 
-        public int Y { get; set; }
+        public float Y { get; set; }
 
         public bool registered { get; set; }
     }

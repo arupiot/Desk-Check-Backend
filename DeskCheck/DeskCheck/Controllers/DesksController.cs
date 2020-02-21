@@ -9,22 +9,17 @@ using System;
 namespace DeskCheck.Controllers
 {
     [ApiController]
-    [Route("desk/getAll")]
+    [Route("desk")]
     public class DesksController : ControllerBase
     {
         private readonly DeskCheckContext _context;
+        private IEnumerable<Desk> desks;
 
         public DesksController(DeskCheckContext context)
         {
             _context = context;
-        }
-
-        // GET: desk/getAll
-        [HttpGet]
-        public IEnumerable<Desk> GetDesks()
-        {
             var rng = new Random();
-            return Enumerable.Range(1, 5).Select(index => new Desk
+            desks = Enumerable.Range(1, 5).Select(index => new Desk
             {
                 deskID = index,
                 temperature = rng.Next(10, 30),
@@ -35,21 +30,27 @@ namespace DeskCheck.Controllers
                 registered = rng.Next(0, 2) == 1
             })
             .ToArray();
-
         }
 
         // GET: desk/getAll
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Desk>> GetDesk(int id)
+        [HttpGet("getAll")]
+        public IEnumerable<Desk> GetDesks()
         {
-            var desk = await _context.Desks.FindAsync(id);
+            return desks;
+        }
 
-            if (desk == null)
-            {
-                return NotFound();
+        // GET: desk/getDesk
+        [HttpGet("getDesk/{id}")]
+        public ActionResult<Desk> GetDesk(int id)
+        {
+            foreach(var desk in desks){
+                if(desk.deskID == id)
+                {
+                    return desk;
+                }
             }
 
-            return desk;
+            return NotFound();
         }
 
         // PUT: api/Desks/5
