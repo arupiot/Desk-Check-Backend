@@ -13,28 +13,37 @@ namespace DeskCheck.Controllers
     public class DesksController : ControllerBase
     {
         private readonly DeskCheckContext _context;
-        private IEnumerable<Desk> desks;
+        private List<Desk> desks;
 
         public DesksController(DeskCheckContext context)
         {
+            desks = new List<Desk>();
             _context = context;
-            var rng = new Random();
-            desks = Enumerable.Range(1, 5).Select(index => new Desk
+            
+            for(int i = 0; i < 5; i++)
             {
-                deskID = index,
+                desks.Add(newDesk(i));
+            }
+        }
+
+        public Desk newDesk(int id)
+        {
+            var rng = new Random();
+            return new Desk
+            {
+                deskID = id,
                 temperature = rng.Next(10, 30),
                 CO2 = rng.Next(200, 500), // Parts Per Million (PPM)
                 floor = rng.Next(0, 5),
                 X = rng.Next(50, 90),
                 Y = rng.Next(50, 90),
                 registered = rng.Next(0, 2) == 1
-            })
-            .ToArray();
+            };
         }
 
         // GET: desk/getAll
         [HttpGet("getAll")]
-        public IEnumerable<Desk> GetDesks()
+        public List<Desk> GetDesks()
         {
             return desks;
         }
@@ -51,6 +60,22 @@ namespace DeskCheck.Controllers
             }
 
             return NotFound();
+        }
+
+        [HttpPut("add")]
+        public void AddDesk()
+        {
+            int numdesks = desks.Count();
+            int desknum = 0;
+
+            if(numdesks > 0)
+            {
+                Desk ldesk = desks[numdesks - 1];
+                desknum = ldesk.deskID;
+            }
+
+            desks.Add(newDesk(desknum));
+            return;
         }
 
         // PUT: api/Desks/5
