@@ -23,7 +23,7 @@ namespace DeskCheck.Controllers
             {
                 deskID = index,
                 temperature = rng.Next(10, 30),
-                CO2 = rng.Next(200, 500), //ppm
+                CO2 = rng.Next(200, 500), // Parts Per Million (PPM)
                 floor = rng.Next(0, 5),
                 X = rng.Next(50, 90),
                 Y = rng.Next(50, 90),
