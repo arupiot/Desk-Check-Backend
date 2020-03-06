@@ -22,11 +22,11 @@ namespace DeskCheck.Controllers
             
             for(int i = 0; i < 5; i++)
             {
-                desks.Add(newDesk(i));
+                desks.Add(NewDesk(i));
             }
         }
 
-        public Desk newDesk(int id)
+        public Desk NewDesk(int id)
         {
             var rng = new Random();
             return new Desk
@@ -45,6 +45,7 @@ namespace DeskCheck.Controllers
         [HttpGet("getAll")]
         public List<Desk> GetDesks()
         {
+            foreach(Desk d in desks){ Console.WriteLine(d.deskID); }
             return desks;
         }
 
@@ -71,10 +72,11 @@ namespace DeskCheck.Controllers
             if(numdesks > 0)
             {
                 Desk ldesk = desks[numdesks - 1];
-                desknum = ldesk.deskID;
+                desknum = ldesk.deskID;;
             }
-
-            desks.Add(newDesk(desknum));
+            desknum++;
+            desks.Add(NewDesk(desknum));
+            foreach(Desk d in desks){ Console.WriteLine(d.deskID); }
             return;
         }
 
