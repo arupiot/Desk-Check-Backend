@@ -21,17 +21,17 @@ namespace DeskCheck.Controllers
             _context = context;
         }
 
-        public String[] getMaps()
+        public List<string> getMaps()
         {
             string dirpath = @".\MapJsons";
-            String[] maps = Directory.GetFiles(dirpath);
+            List<string> maps = new List<string>(Directory.GetFiles(dirpath));
             return maps;
         }
 
         [HttpGet("getSingle/{fnum}")]
         public ActionResult<string> GetSingle(int fnum)
         {
-            String[] maps = getMaps();
+            List<string> maps = getMaps();
 
             foreach (string name in maps)
             {
@@ -44,6 +44,19 @@ namespace DeskCheck.Controllers
 
             }
             return NotFound();
+        }
+
+        [HttpGet("getAll")]
+        public ActionResult<List<string>> GetAll()
+        {
+            List<string> mapJsons = new List<string>();
+            foreach(string name in getMaps())
+            {
+                using StreamReader r = new StreamReader(name);
+                string json = r.ReadToEnd();
+                mapJsons.Add(json);
+            }
+            return mapJsons;
         }
     }
 }
