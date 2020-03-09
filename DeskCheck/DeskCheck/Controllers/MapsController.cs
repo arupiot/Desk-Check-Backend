@@ -21,21 +21,25 @@ namespace DeskCheck.Controllers
             _context = context;
         }
 
-        [HttpGet("getSingle/{fnum}")]
-        public ActionResult<string> GetSingle(int fnum)
+        public String[] getMaps()
         {
             string dirpath = @".\MapJsons";
             String[] maps = Directory.GetFiles(dirpath);
+            return maps;
+        }
+
+        [HttpGet("getSingle/{fnum}")]
+        public ActionResult<string> GetSingle(int fnum)
+        {
+            String[] maps = getMaps();
 
             foreach (string name in maps)
             {
                 if (name.Contains(fnum.ToString()))
                 {
-                    using (StreamReader r = new StreamReader(name))
-                    {
-                        string json = r.ReadToEnd();
-                        return json;
-                    }
+                    using StreamReader r = new StreamReader(name);
+                    string json = r.ReadToEnd();
+                    return json;
                 }
 
             }
