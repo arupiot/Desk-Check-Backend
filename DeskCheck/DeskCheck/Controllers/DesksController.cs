@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using DeskCheck.Models;
 using System;
+using System.Timers;
 
 namespace DeskCheck.Controllers
 {
@@ -13,13 +14,12 @@ namespace DeskCheck.Controllers
     public class DesksController : ControllerBase
     {
         private readonly DeskCheckContext _context;
-        private IEnumerable<Desk> desks;
+        private List<Desk> desks;
 
         public DesksController(DeskCheckContext context)
         {
             _context = context;
-            var rng = new Random();
-            desks = Enumerable.Range(1, 5).Select(index => new Desk
+            /*desks = Enumerable.Range(1, 5).Select(index => new Desk
             {
                 deskID = index,
                 temperature = rng.Next(10, 30),
@@ -29,13 +29,44 @@ namespace DeskCheck.Controllers
                 Y = rng.Next(50, 90),
                 registered = rng.Next(0, 2) == 1
             })
-            .ToArray();
+            .ToArray();*/
+            desks = new List<Desk>();
+            for(int i = 0; i < 5; i++)
+            {
+                desks.Add(NewDesk(i));
+            }
+        }
+
+        private Timer timer;
+        public void InitTimer()
+        {
+            timer = new Timer(1000);
+            timer.AutoReset = true;
+            timer.Elapsed += new ElapsedEventHandler(/*make methos that generates initial 5 desks, put name here*/);
+            timer.Start();
+        }
+
+        public Desk NewDesk(int dnum)
+        {
+            var rng = new Random();
+            Desk d = new Desk
+            {
+                deskID = dnum,
+                temperature = rng.Next(10, 30),
+                CO2 = rng.Next(200, 500), // Parts Per Million (PPM)
+                floor = rng.Next(0, 5),
+                X = rng.Next(50, 90),
+                Y = rng.Next(50, 90),
+                registered = rng.Next(0, 2) == 1
+            };
+            return d;
         }
 
         // GET: desk/getAll
         [HttpGet("getAll")]
-        public IEnumerable<Desk> GetDesks()
+        public List<Desk> GetDesks()
         {
+            Console.WriteLine(desks.Count());
             return desks;
         }
 
