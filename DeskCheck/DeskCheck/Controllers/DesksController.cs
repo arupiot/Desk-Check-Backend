@@ -53,7 +53,6 @@ namespace DeskCheck.Controllers
         [HttpGet("getAll")]
         public List<Desk> GetDesks()
         {
-            Console.WriteLine(desks);
             return desks;
         }
 
