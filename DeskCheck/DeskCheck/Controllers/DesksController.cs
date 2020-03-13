@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using DeskCheck.Models;
 using System;
-using System.Timers;
+using Newtonsoft.Json;
+using System.IO;
 
 namespace DeskCheck.Controllers
 {
@@ -19,31 +18,29 @@ namespace DeskCheck.Controllers
         public DesksController(DeskCheckContext context)
         {
             _context = context;
-            /*desks = Enumerable.Range(1, 5).Select(index => new Desk
+            desks = new List<Desk>();
+            string fpath = @".\DeskJsons\desks.json";
+            using (StreamReader sr = new StreamReader(fpath))
             {
-                deskID = index,
-                temperature = rng.Next(10, 30),
-                CO2 = rng.Next(200, 500), // Parts Per Million (PPM)
-                floor = rng.Next(0, 5),
-                X = rng.Next(50, 90),
-                Y = rng.Next(50, 90),
-                registered = rng.Next(0, 2) == 1
-            })
-            .ToArray();*/
+                string json = sr.ReadToEnd();
+                desks = JsonConvert.DeserializeObject<List<Desk>>(json);
+            }
+
+            Random rng = new Random();
+            foreach(Desk d in desks)
+            {
+                d.CO2 += rng.Next(-100, 100);
+                d.temp += rng.Next(-5, 5);
+            }
+        }
+
+        public void FirstDesks()//object sender, ElapsedEventArgs e
+        {
             desks = new List<Desk>();
             for(int i = 0; i < 5; i++)
             {
                 desks.Add(NewDesk(i));
             }
-        }
-
-        private Timer timer;
-        public void InitTimer()
-        {
-            timer = new Timer(1000);
-            timer.AutoReset = true;
-            timer.Elapsed += new ElapsedEventHandler(/*make methos that generates initial 5 desks, put name here*/);
-            timer.Start();
         }
 
         public Desk NewDesk(int dnum)
@@ -52,12 +49,11 @@ namespace DeskCheck.Controllers
             Desk d = new Desk
             {
                 deskID = dnum,
-                temperature = rng.Next(10, 30),
+                temp = rng.Next(10, 30),
                 CO2 = rng.Next(200, 500), // Parts Per Million (PPM)
                 floor = rng.Next(0, 5),
                 X = rng.Next(50, 90),
                 Y = rng.Next(50, 90),
-                registered = rng.Next(0, 2) == 1
             };
             return d;
         }
@@ -66,7 +62,7 @@ namespace DeskCheck.Controllers
         [HttpGet("getAll")]
         public List<Desk> GetDesks()
         {
-            Console.WriteLine(desks.Count());
+            Console.WriteLine(desks);
             return desks;
         }
 
