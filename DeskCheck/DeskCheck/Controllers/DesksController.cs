@@ -34,15 +34,6 @@ namespace DeskCheck.Controllers
             }
         }
 
-        public void FirstDesks()//object sender, ElapsedEventArgs e
-        {
-            desks = new List<Desk>();
-            for(int i = 0; i < 5; i++)
-            {
-                desks.Add(NewDesk(i));
-            }
-        }
-
         public Desk NewDesk(int dnum)
         {
             var rng = new Random();
