@@ -23,7 +23,7 @@ namespace DeskCheck.Controllers
             _context = context;
         }
 
-        [HttpGet("sendNotif")]
+        [HttpPost("sendNotif")]
         public void SendNotif()
         {
             Execute().Wait();
