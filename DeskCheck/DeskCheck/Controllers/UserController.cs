@@ -31,13 +31,14 @@ namespace DeskCheck.Controllers
 
         static async Task Execute()
         {
+            string content = "An issue was reported";
             var apiKey = Environment.GetEnvironmentVariable("SENDGRID_API_KEY");
             var client = new SendGridClient(apiKey);
             var from = new EmailAddress("Desk@check.com", "Desk Check");
             var subject = "Issue";
             var to = new EmailAddress("jake.adkin@arup.com", "Jake Adkin");
-            var plainTextContent = "and easy to do anywhere, even with C#";
-            var htmlContent = "An issue was reported on floor 3";
+            var plainTextContent = content;
+            var htmlContent = content;
             var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
             var response = await client.SendEmailAsync(msg);
         }
