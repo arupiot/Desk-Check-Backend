@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using DeskCheck.Models;
 using System;
+using Newtonsoft.Json;
+using System.IO;
 
 namespace DeskCheck.Controllers
 {
@@ -17,35 +17,42 @@ namespace DeskCheck.Controllers
 
         public DesksController(DeskCheckContext context)
         {
-            desks = new List<Desk>();
             _context = context;
-            
-            for(int i = 0; i < 5; i++)
+            desks = new List<Desk>();
+            string fpath = @".\DeskJsons\desks.json";
+            using (StreamReader sr = new StreamReader(fpath))
             {
-                desks.Add(NewDesk(i));
+                string json = sr.ReadToEnd();
+                desks = JsonConvert.DeserializeObject<List<Desk>>(json);
+            }
+
+            Random rng = new Random();
+            foreach(Desk d in desks)
+            {
+                d.CO2 += rng.Next(-100, 100);
+                d.temp += rng.Next(-5, 5);
             }
         }
 
-        public Desk NewDesk(int id)
+        public Desk NewDesk(int dnum)
         {
             var rng = new Random();
-            return new Desk
+            Desk d = new Desk
             {
-                deskID = id,
-                temperature = rng.Next(10, 30),
+                deskID = dnum,
+                temp = rng.Next(10, 30),
                 CO2 = rng.Next(200, 500), // Parts Per Million (PPM)
                 floor = rng.Next(0, 5),
                 X = rng.Next(50, 90),
                 Y = rng.Next(50, 90),
-                registered = rng.Next(0, 2) == 1
             };
+            return d;
         }
 
         // GET: desk/getAll
         [HttpGet("getAll")]
         public List<Desk> GetDesks()
         {
-            foreach(Desk d in desks){ Console.WriteLine(d.deskID); }
             return desks;
         }
 
@@ -61,23 +68,6 @@ namespace DeskCheck.Controllers
             }
 
             return NotFound();
-        }
-
-        [HttpPut("add")]
-        public void AddDesk()
-        {
-            int numdesks = desks.Count();
-            int desknum = 0;
-
-            if(numdesks > 0)
-            {
-                Desk ldesk = desks[numdesks - 1];
-                desknum = ldesk.deskID;;
-            }
-            desknum++;
-            desks.Add(NewDesk(desknum));
-            foreach(Desk d in desks){ Console.WriteLine(d.deskID); }
-            return;
         }
 
         // PUT: api/Desks/5
