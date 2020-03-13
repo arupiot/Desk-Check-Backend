@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using DeskCheck.Models;
 using System;
+using Newtonsoft.Json;
+using System.IO;
 
 namespace DeskCheck.Controllers
 {
@@ -13,28 +13,45 @@ namespace DeskCheck.Controllers
     public class DesksController : ControllerBase
     {
         private readonly DeskCheckContext _context;
-        private IEnumerable<Desk> desks;
+        private List<Desk> desks;
 
         public DesksController(DeskCheckContext context)
         {
             _context = context;
-            var rng = new Random();
-            desks = Enumerable.Range(1, 5).Select(index => new Desk
+            desks = new List<Desk>();
+            string fpath = @".\DeskJsons\desks.json";
+            using (StreamReader sr = new StreamReader(fpath))
             {
-                deskID = index,
-                temperature = rng.Next(10, 30),
+                string json = sr.ReadToEnd();
+                desks = JsonConvert.DeserializeObject<List<Desk>>(json);
+            }
+
+            Random rng = new Random();
+            foreach(Desk d in desks)
+            {
+                d.CO2 += rng.Next(-100, 100);
+                d.temp += rng.Next(-5, 5);
+            }
+        }
+
+        public Desk NewDesk(int dnum)
+        {
+            var rng = new Random();
+            Desk d = new Desk
+            {
+                deskID = dnum,
+                temp = rng.Next(10, 30),
                 CO2 = rng.Next(200, 500), // Parts Per Million (PPM)
                 floor = rng.Next(0, 5),
                 X = rng.Next(50, 90),
                 Y = rng.Next(50, 90),
-                registered = rng.Next(0, 2) == 1
-            })
-            .ToArray();
+            };
+            return d;
         }
 
         // GET: desk/getAll
         [HttpGet("getAll")]
-        public IEnumerable<Desk> GetDesks()
+        public List<Desk> GetDesks()
         {
             return desks;
         }
