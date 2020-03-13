@@ -14,19 +14,20 @@ namespace DeskCheck.Controllers
     {
         private readonly DeskCheckContext _context;
         private List<Desk> desks;
+        private string desksfpath;
 
         public DesksController(DeskCheckContext context)
         {
             _context = context;
-            desks = new List<Desk>();
-            string fpath = @".\DeskJsons\desks.json";
-            using (StreamReader sr = new StreamReader(fpath))
+            desksfpath= @".\DeskJsons\desks.json";
+            using (StreamReader sr = new StreamReader(desksfpath))
             {
-                string json = sr.ReadToEnd();
+                var json = sr.ReadToEnd();
+                Console.WriteLine(json);
                 desks = JsonConvert.DeserializeObject<List<Desk>>(json);
             }
-
-            Random rng = new Random();
+            Console.WriteLine(desks.Count);
+            var rng = new Random();
             foreach(Desk d in desks)
             {
                 d.CO2 += rng.Next(-100, 100);
@@ -68,6 +69,31 @@ namespace DeskCheck.Controllers
             }
 
             return NotFound();
+        }
+
+        [HttpGet("add")]
+        public void AddDesk()
+        {
+            int numdesks = desks.Count;
+            int dnum = 0;
+            if (numdesks > 0)
+            {
+                dnum = desks[numdesks - 1].deskID;
+                dnum++;
+            }
+            //String json = Newtonsoft.Json.JsonConvert.SerializeObject();
+            using StreamWriter file = System.IO.File.CreateText(desksfpath);
+            using StreamReader sr = new StreamReader(desksfpath);
+            {
+                string json = sr.ReadToEnd();
+                var list = JsonConvert.DeserializeObject<List<Desk>>(json);
+                list.Add(NewDesk(dnum));
+
+                JsonSerializer serializer = new JsonSerializer();
+                serializer.Serialize(file, list);                
+            }
+
+
         }
 
         // PUT: api/Desks/5
