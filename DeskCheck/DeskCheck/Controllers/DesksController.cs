@@ -22,11 +22,9 @@ namespace DeskCheck.Controllers
             desksfpath= @".\DeskJsons\desks.json";
             using (StreamReader sr = new StreamReader(desksfpath))
             {
-                var json = sr.ReadToEnd();
-                Console.WriteLine(json);
+                string json = sr.ReadToEnd();
                 desks = JsonConvert.DeserializeObject<List<Desk>>(json);
             }
-            Console.WriteLine(desks.Count);
             var rng = new Random();
             foreach(Desk d in desks)
             {
@@ -81,19 +79,22 @@ namespace DeskCheck.Controllers
                 dnum = desks[numdesks - 1].deskID;
                 dnum++;
             }
-            //String json = Newtonsoft.Json.JsonConvert.SerializeObject();
-            using StreamWriter file = System.IO.File.CreateText(desksfpath);
+
             using StreamReader sr = new StreamReader(desksfpath);
+            List<Desk> list;
             {
                 string json = sr.ReadToEnd();
-                var list = JsonConvert.DeserializeObject<List<Desk>>(json);
+                list = JsonConvert.DeserializeObject<List<Desk>>(json);
                 list.Add(NewDesk(dnum));
-
-                JsonSerializer serializer = new JsonSerializer();
-                serializer.Serialize(file, list);                
+                sr.Close();
             }
 
-
+            using StreamWriter file = System.IO.File.CreateText(desksfpath);
+            {
+                JsonSerializer serializer = new JsonSerializer();
+                serializer.Serialize(file, list);    
+            }
+            
         }
 
         // PUT: api/Desks/5
