@@ -39,11 +39,11 @@ namespace DeskCheck.Controllers
             Desk d = new Desk
             {
                 deskID = dnum,
-                temp = rng.Next(10, 30),
+                temp = rng.Next(15, 25),
                 CO2 = rng.Next(200, 500), // Parts Per Million (PPM)
                 floor = rng.Next(0, 5),
-                X = rng.Next(50, 90),
-                Y = rng.Next(50, 90),
+                X = rng.Next(1, 90),
+                Y = rng.Next(1, 90),
             };
             return d;
         }
