@@ -69,7 +69,7 @@ namespace DeskCheck.Controllers
             return NotFound();
         }
 
-        [HttpGet("add")]
+        [HttpPut("add")]
         public void AddDesk()
         {
             int numdesks = desks.Count;
