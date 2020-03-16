@@ -26,15 +26,16 @@ namespace DeskCheck.Controllers
         [HttpPost("sendNotif")]
         public void SendNotif()
         {
-            Execute().Wait();
+            string name = Request.Headers["Name"];
+            string content = Request.Headers["Content"];
+            Execute(name, content).Wait();
         }
 
-        static async Task Execute()
+        static async Task Execute(string name, string content)
         {
-            string content = "An issue was reported";
             var apiKey = Environment.GetEnvironmentVariable("SENDGRID_API_KEY");
             var client = new SendGridClient(apiKey);
-            var from = new EmailAddress("Desk@check.com", "Desk Check");
+            var from = new EmailAddress("Desk@check.com", name);
             var subject = "Issue";
             var to = new EmailAddress("jake.adkin@arup.com", "Jake Adkin");
             var plainTextContent = content;
