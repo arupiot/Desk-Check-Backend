@@ -5,6 +5,7 @@ using DeskCheck.Models;
 using System;
 using Newtonsoft.Json;
 using System.IO;
+using System.Linq;
 
 namespace DeskCheck.Controllers
 {
@@ -27,7 +28,7 @@ namespace DeskCheck.Controllers
             }
 
             Random rng = new Random();
-            foreach(Desk d in desks)
+            foreach (Desk d in desks)
             {
                 d.CO2 += rng.Next(-100, 100);
                 d.temp += rng.Next(-5, 5);
@@ -60,14 +61,37 @@ namespace DeskCheck.Controllers
         [HttpGet("getDesk/{id}")]
         public ActionResult<Desk> GetDesk(int id)
         {
-            foreach(var desk in desks){
-                if(desk.deskID == id)
+            foreach (var desk in desks) {
+                if (desk.deskID == id)
                 {
                     return desk;
                 }
             }
 
             return NotFound();
+        }
+
+        [HttpDelete("remove/{id}")]
+        public IActionResult RemoveDesk(int id)
+        {
+            bool rem = false;
+            string desksfpath = @".\DeskJsons\desks.json";
+            using StreamReader sr = new StreamReader(desksfpath);
+            List<Desk> list;
+            {
+                string json = sr.ReadToEnd();
+                list = JsonConvert.DeserializeObject<List<Desk>>(json);
+                rem = list.Remove(list.Single(d => d.deskID == id));
+                sr.Close();
+            }
+
+            using StreamWriter file = System.IO.File.CreateText(desksfpath);
+            {
+                JsonSerializer serializer = new JsonSerializer();
+                serializer.Serialize(file, list);
+            }
+
+            if(!rem) { return NotFound(); }else { return Ok(); }
         }
 
         // PUT: api/Desks/5
