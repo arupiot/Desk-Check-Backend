@@ -38,7 +38,7 @@ namespace DeskCheck.Controllers
 
         static async Task Execute(string name, string content)
         {
-            var message = "User: " + name + " reported problem" + content;
+            var message = "User: " + name + "<br> reported problem: " + content;
             var apiKey = Environment.GetEnvironmentVariable("SENDGRID_API_KEY");
             var client = new SendGridClient(apiKey);
             var from = new EmailAddress("Desk@check.com", "Desk Check");
