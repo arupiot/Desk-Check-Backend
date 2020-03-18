@@ -33,7 +33,7 @@ namespace DeskCheck.Controllers
             }
         }
 
-        public Desk NewDesk(int dnum)
+        public Desk NewDesk(int dnum, int flr, float x, float y)
         {
             var rng = new Random();
             Desk d = new Desk
@@ -41,9 +41,9 @@ namespace DeskCheck.Controllers
                 deskID = dnum,
                 temp = rng.Next(15, 25),
                 CO2 = rng.Next(200, 500), // Parts Per Million (PPM)
-                floor = rng.Next(0, 5),
-                X = rng.Next(1, 90),
-                Y = rng.Next(1, 90),
+                floor = flr,
+                X = x,
+                Y = y,
             };
             return d;
         }
@@ -72,6 +72,9 @@ namespace DeskCheck.Controllers
         [HttpPut("add")]
         public void AddDesk()
         {
+            int floor = int.Parse(Request.Headers["Floor"]);
+            float x = float.Parse(Request.Headers["X"]);
+            float y = float.Parse(Request.Headers["Y"]);
             int numdesks = desks.Count;
             int dnum = 0;
             if (numdesks > 0)
@@ -85,7 +88,7 @@ namespace DeskCheck.Controllers
             {
                 string json = sr.ReadToEnd();
                 list = JsonConvert.DeserializeObject<List<Desk>>(json);
-                list.Add(NewDesk(dnum));
+                list.Add(NewDesk(dnum, floor, x, y));
                 sr.Close();
             }
 
