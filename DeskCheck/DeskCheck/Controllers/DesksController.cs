@@ -106,14 +106,20 @@ namespace DeskCheck.Controllers
         public IActionResult RemoveDesk(int id)
         {
             bool rem = false;
-            string desksfpath = @".\DeskJsons\desks.json";
             using StreamReader sr = new StreamReader(desksfpath);
             List<Desk> list;
             {
                 string json = sr.ReadToEnd();
                 list = JsonConvert.DeserializeObject<List<Desk>>(json);
-                rem = list.Remove(list.Single(d => d.deskID == id));
                 sr.Close();
+            }
+
+            foreach(Desk d in list.ToList())
+            {
+                if (d.deskID == id)
+                {
+                    rem = list.Remove(d);
+                }
             }
 
             using StreamWriter file = System.IO.File.CreateText(desksfpath);
