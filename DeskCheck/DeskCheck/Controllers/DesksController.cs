@@ -15,13 +15,13 @@ namespace DeskCheck.Controllers
     {
         private readonly DeskCheckContext _context;
         private List<Desk> desks;
+        private string desksfpath;
 
         public DesksController(DeskCheckContext context)
         {
             _context = context;
-            desks = new List<Desk>();
-            string fpath = @".\DeskJsons\desks.json";
-            using (StreamReader sr = new StreamReader(fpath))
+            desksfpath= @".\DeskJsons\desks.json";
+            using (StreamReader sr = new StreamReader(desksfpath))
             {
                 string json = sr.ReadToEnd();
                 desks = JsonConvert.DeserializeObject<List<Desk>>(json);
@@ -35,17 +35,17 @@ namespace DeskCheck.Controllers
             }
         }
 
-        public Desk NewDesk(int dnum)
+        public Desk NewDesk(int dnum, int flr, float x, float y)
         {
             var rng = new Random();
             Desk d = new Desk
             {
                 deskID = dnum,
-                temp = rng.Next(10, 30),
+                temp = rng.Next(15, 25),
                 CO2 = rng.Next(200, 500), // Parts Per Million (PPM)
-                floor = rng.Next(0, 5),
-                X = rng.Next(50, 90),
-                Y = rng.Next(50, 90),
+                floor = flr,
+                X = x,
+                Y = y,
             };
             return d;
         }
@@ -69,6 +69,37 @@ namespace DeskCheck.Controllers
             }
 
             return NotFound();
+        }
+
+        [HttpPut("add")]
+        public void AddDesk()
+        {
+            int floor = int.Parse(Request.Headers["Floor"]);
+            float x = float.Parse(Request.Headers["X"]);
+            float y = float.Parse(Request.Headers["Y"]);
+            int numdesks = desks.Count;
+            int dnum = 0;
+            if (numdesks > 0)
+            {
+                dnum = desks[numdesks - 1].deskID;
+                dnum++;
+            }
+
+            using StreamReader sr = new StreamReader(desksfpath);
+            List<Desk> list;
+            {
+                string json = sr.ReadToEnd();
+                list = JsonConvert.DeserializeObject<List<Desk>>(json);
+                list.Add(NewDesk(dnum, floor, x, y));
+                sr.Close();
+            }
+
+            using StreamWriter file = System.IO.File.CreateText(desksfpath);
+            {
+                JsonSerializer serializer = new JsonSerializer();
+                serializer.Serialize(file, list);    
+            }
+            
         }
 
         [HttpDelete("remove/{id}")]
