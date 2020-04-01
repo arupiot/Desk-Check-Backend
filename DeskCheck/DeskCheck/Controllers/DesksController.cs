@@ -32,6 +32,7 @@ namespace DeskCheck.Controllers
             {
                 d.CO2 += rng.Next(-100, 100);
                 d.temp += rng.Next(-5, 5);
+                if(rng.Next(0, 100) < 80) { d.available = false; }
             }
         }
 
@@ -46,6 +47,7 @@ namespace DeskCheck.Controllers
                 floor = flr,
                 X = x,
                 Y = y,
+                available = true
             };
             return d;
         }
