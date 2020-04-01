@@ -25,5 +25,8 @@ namespace DeskCheck.Models
 
         [JsonProperty("Y")]
         public float Y { get; set; }
+
+        [JsonProperty("available")]
+        public bool available { get; set; }
     }
 }
