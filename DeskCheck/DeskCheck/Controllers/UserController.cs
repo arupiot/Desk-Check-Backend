@@ -26,6 +26,7 @@ namespace DeskCheck.Controllers
         [HttpPost("sendNotif")]
         public IActionResult SendNotif()
         {
+            Console.Write("hit");
             string name = Request.Headers["Name"];
             string content = Request.Headers["Content"];
             if(name == null || content == null)
@@ -43,7 +44,7 @@ namespace DeskCheck.Controllers
             var client = new SendGridClient(apiKey);
             var from = new EmailAddress("Desk@check.com", "Desk Check");
             var subject = "Issue";
-            var to = new EmailAddress("jake.adkin@arup.com", "Jake Adkin");
+            var to = new EmailAddress("rory.webber@arup.com", "Jake Adkin");
             var plainTextContent = message;
             var htmlContent = message;
             var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
